@@ -391,6 +391,8 @@ you have to wait a few (two?) minutes. Observe it with 'netstat -na'.
 :- use_module(library('http/http_dispatch')).
 :- use_module(library('http/http_parameters')).
 :- use_module(library('http/http_client')).
+:- use_module(library('http/http_cors')).
+:- use_module(library(settings)).
 
 
 % Configure the port.
@@ -448,6 +450,7 @@ http_server :-
 	http_server(Port).
 
 http_server(Port) :-
+	set_setting(http:cors, ['*']),
 	get_time_formatted(Time),
 	format(user_error, "~w: Starting an HTTP interface for APE at port ~w ...~n", [Time, Port]),
 	http_server(http_dispatch, [port(Port), workers(1)]),
@@ -466,7 +469,7 @@ ape(Request) :-
 			http_parameters(Request, Parameters),
 			http_parameters_to_ape_parameters(Parameters, ApeParameters),
 			get_ape_results_timelimit(ApeParameters, ContentType, Content, 10) % 10 second timelimit
-		),	
+		),
 		Exception,
 		format_error_for_http(Exception, ContentType, Content)
 	),
