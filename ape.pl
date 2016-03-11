@@ -473,6 +473,7 @@ ape(Request) :-
 		Exception,
 		format_error_for_http(Exception, ContentType, Content)
 	),
+	cors_enable,
 	format('Content-type: ~w\r\n\r\n~w', [ContentType, Content]).
 
 
